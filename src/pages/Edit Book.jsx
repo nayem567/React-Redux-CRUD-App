@@ -1,30 +1,27 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addBook } from "../features/books/bookSlice";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { editBook } from "../features/books/bookSlice";
 
-const AddBook = () => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+const EditBook = () => {
+  const location = useLocation();
 
-  const books = useSelector((state) => state.books);
+  const [id, setId] = useState(location.state.id);
+  const [title, setTitle] = useState(location.state.title);
+  const [author, setAuthor] = useState(location.state.author);
+
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const book = { id: books.length + 1, title, author };
-    dispatch(addBook(book));
-    navigate("/show-books", {replace:true})
-    setTitle("");
-    setAuthor("");
-    console.log({title, author})
+    dispatch(editBook({ id, title, author }));
+    navigate("/show-books", {replace: true});
   };
 
   return (
     <div>
-      <h2>Add Book</h2>
+      <h2>Edit Book</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Title : </label>
@@ -42,10 +39,10 @@ const AddBook = () => {
             onChange={(e) => setAuthor(e.target.value)}
           />
         </div>
-        <button type="submit">Add Book</button>
+        <button type="submit">Update Book</button>
       </form>
     </div>
   );
 };
 
-export default AddBook;
+export default EditBook;
